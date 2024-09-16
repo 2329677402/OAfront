@@ -12,6 +12,13 @@ const login = (email, password) => {
   return http.post(path, { email, password });
 };
 
+const resetPwd = (old_pwd, new_pwd, confirm_pwd) => {
+  // 修改密码接口
+  const path = "/auth/resetpwd";
+  return http.post(path, { old_pwd, new_pwd, confirm_pwd });
+};
+
 export default {
   login,
+  resetPwd,
 };

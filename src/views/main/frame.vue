@@ -9,6 +9,8 @@ import { ref, computed, reactive } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Fold, Expand } from "@element-plus/icons-vue"; // 引入element-plus的图标
 import { useRouter } from "vue-router";
+import authHttp from "@/api/authHttp";
+import { ElMessage } from "element-plus";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -60,15 +62,23 @@ const onExit = () => {
 
 // 提交密码表单
 const onSubmit = () => {
-  formTag.value.validate((valid, fields) => {
+  formTag.value.validate(async (valid, fields) => {
     if (valid) {
-      console.log("验证通过");
+      try {
+        await authHttp.resetPwd(
+          resetPwdform.old_pwd,
+          resetPwdform.new_pwd,
+          resetPwdform.confirm_pwd
+        );
+        ElMessage.success("密码修改成功!");
+        dialogVisible.value = false; // 关闭对话框
+      } catch (detail) {
+        ElMessage.error(detail);
+      }
     } else {
-      console.log("验证失败");
+      ElMessage.info("请按要求填写密码!");
     }
   });
-  console.log(fields);
-  type = "passward";
 };
 
 // 控制修改密码对话框

@@ -5,6 +5,7 @@
  * @Description: 封装axios, 方便批量处理HTTP请求
  */
 import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
 
 class Http {
   //constructor: 构造函数, 使用类初始对象的时候自动执行
@@ -15,6 +16,16 @@ class Http {
       // 如果运行npm run build, baseURL为生产环境的地址
       baseURL: import.meta.env.VITE_BASE_URL,
       timeout: 6000,
+    });
+
+    // 每次请求都在headers中带上JWT token
+    this.instance.interceptors.request.use((config) => {
+      const authStore = useAuthStore();
+      const token = authStore.token;
+      if (token) {
+        config.headers.Authorization = `JWT ${token}`; //也可以写成 "JWT " + token
+      }
+      return config;
     });
   }
 
