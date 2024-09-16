@@ -41,7 +41,7 @@ export const useAuthStore = defineStore("auth", () => {
     // 1. 空对象{}: 用if判断会返回true
     // 2. 空字符串"": 用if判断会返回false
     // 如果内存中_user.value不存在，就从硬盘中读取
-    if (Object.keys(_user.value).length == 0) {
+    if (Object.keys(_user.value).length === 0) {
       let user_str = localStorage.getItem(USER_KEY);
       if (user_str) {
         _user.value = JSON.parse(user_str);
