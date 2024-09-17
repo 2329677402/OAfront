@@ -51,7 +51,15 @@ class Http {
   }
 
   get(path, params) {
-    return this.instance.get(path, { params });
+    return new Promise(async (resolve, reject) => {
+      try {
+        let result = await this.instance.get(path, params);
+        resolve(result.data);
+      } catch (err) {
+        let detail = err.response.data.detail;
+        reject(detail);
+      }
+    });
   }
 }
 

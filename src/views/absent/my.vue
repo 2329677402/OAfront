@@ -6,7 +6,9 @@
 -->
 <script setup name="myabsent">
 import OAPageHeader from "@/components/OAPageHeader.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
+import absentHttp from "@/api/absentHttp";
+import { ElMessage } from "element-plus";
 
 let formLabelWidth = "100px"; // 表单标签宽度
 let dialogFormVisible = ref(false); // 发起考勤对话框, 默认不显示
@@ -17,6 +19,17 @@ let absentform = reactive({
   request_content: "",
 }); // 发起考勤表单, 默认为空
 let absent_types = ref([]); // 请假类型列表, 默认为空
+let responder = reactive({
+  email: "",
+  realname: "",
+}); // 创建审批人对象
+let responder_str = computed(() => {
+  if (responder.email) {
+    return "[" + responder.email + "]" + responder.realname;
+  } else {
+    return "无";
+  }
+}); // 指定的审批人信息
 let absentfromref = ref(); // 获取发起考勤的表单对象
 
 let rules = reactive({
@@ -51,6 +64,20 @@ const onSubmitAbsent = () => {
     }
   });
 };
+
+onMounted(async () => {
+  try {
+    // 1. 获取请假类型列表
+    let absent_types_data = await absentHttp.getAbsentTypes();
+    absent_types.value = absent_types_data;
+
+    // 2. 获取审批人信息
+    let responder_data = await absentHttp.getResponder();
+    Object.assign(responder, responder_data);
+  } catch (detail) {
+    ElMessage.error(detail);
+  }
+});
 </script>
 
 <template>
@@ -105,7 +132,7 @@ const onSubmitAbsent = () => {
       </el-form-item>
 
       <el-form-item label="审批人" :label-width="formLabelWidth">
-        <el-input value="xxx" readonly disabled autocomplete="off" />
+        <el-input :value="responder_str" readonly disabled autocomplete="off" />
       </el-form-item>
 
       <el-form-item
