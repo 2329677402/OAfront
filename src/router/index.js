@@ -2,14 +2,16 @@
  * @Date: 2024-09-11 01:25:53
  * @Author: Poco Ray
  * @FilePath: \OAfront\src\router\index.js
- * @Description: 路由配置
+ * @Description: 页面-路由导航映射
  */
 import { createRouter, createWebHashHistory } from "vue-router";
 import login from "@/views/login/login.vue";
 import frame from "@/views/main/frame.vue";
+import myabsent from "@/views/absent/my.vue";
+import subabsent from "@/views/absent/sub.vue";
 import { useAuthStore } from "@/stores/auth";
 
-// 创建并配置路由的映射关系
+// 创建并配置路由导航的映射关系
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
@@ -17,6 +19,10 @@ const router = createRouter({
       path: "/",
       name: "frame",
       component: frame,
+      children: [
+        { path: "/absent/my", name: "myabsent", component: myabsent },
+        { path: "/absent/sub", name: "subabsent", component: subabsent },
+      ],
     },
     {
       path: "/login",

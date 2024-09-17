@@ -101,6 +101,7 @@ const onControlResetPwdDialog = () => {
       </router-link>
 
       <el-menu
+        :router="true"
         active-text-color="#ffd04b"
         background-color="#343a40"
         class="el-menu-vertical-demo"
@@ -121,11 +122,11 @@ const onControlResetPwdDialog = () => {
             <el-icon><Checked /></el-icon>
             <span>考勤管理</span>
           </template>
-          <el-menu-item index="2-1">
+          <el-menu-item index="2-1" :route="{ name: 'myabsent' }">
             <el-icon><UserFilled /></el-icon>
             <span>个人考勤</span>
           </el-menu-item>
-          <el-menu-item index="2-2">
+          <el-menu-item index="2-2" :route="{ name: 'subabsent' }">
             <el-icon><User /></el-icon>
             <span>下属考勤</span>
           </el-menu-item>
@@ -204,7 +205,7 @@ const onControlResetPwdDialog = () => {
         </el-dropdown>
       </el-header>
       <!-- 主体 -->
-      <el-main class="main">Main</el-main>
+      <el-main class="main"><router-view></router-view></el-main>
     </el-container>
   </el-container>
 
