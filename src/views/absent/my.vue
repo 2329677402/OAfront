@@ -15,7 +15,7 @@ let dialogFormVisible = ref(false); // 发起考勤对话框, 默认不显示
 let absentform = reactive({
   title: "",
   absent_type_id: null,
-  data_range: [],
+  date_range: [],
   request_content: "",
 }); // 发起考勤表单, 默认为空
 let absent_types = ref([]); // 请假类型列表, 默认为空
@@ -37,7 +37,7 @@ let rules = reactive({
   absent_type_id: [
     { required: true, message: "请选择请假类型！", trigger: "change" },
   ],
-  data_range: [
+  date_range: [
     { required: true, message: "请选择请假时间！", trigger: "blur" },
   ],
   request_content: [
@@ -45,22 +45,33 @@ let rules = reactive({
   ],
 }); // 发起考勤表单验证规则
 
+// 显示发起考勤对话框
 const onShowDialog = () => {
   absentform.title = ""; // 清空标题
   absentform.absent_type_id = null; // 清空请假类型
-  absentform.data_range = []; // 清空请假时间
+  absentform.date_range = []; // 清空请假时间
   absentform.request_content = ""; // 清空请假事由
   dialogFormVisible.value = true; // 显示发起考勤对话框
 };
 
+// 提交发起考勤表单
 const onSubmitAbsent = () => {
-  absentfromref.value.validate((valid) => {
+  absentfromref.value.validate(async (valid, fields) => {
     if (valid) {
-      console.log("表单验证通过");
-      dialogFormVisible.value = false; // 隐藏发起考勤对话框
-    } else {
-      console.log("表单验证失败");
-      return false;
+      let data = {
+        title: absentform.title,
+        absent_type_id: absentform.absent_type_id,
+        start_date: absentform.date_range[0],
+        end_date: absentform.date_range[1],
+        request_content: absentform.request_content,
+      };
+      try {
+        let absent = await absentHttp.applyAbsent(data);
+        console.log(absent);
+        dialogFormVisible.value = false; // 提交之后关闭对话框
+      } catch (detail) {
+        ElMessage.error(detail);
+      }
     }
   });
 };
@@ -120,14 +131,16 @@ onMounted(async () => {
       <el-form-item
         label="请假时间"
         :label-width="formLabelWidth"
-        prop="data_range"
+        prop="date_range"
       >
         <el-date-picker
-          v-model="absentform.data_range"
+          v-model="absentform.date_range"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
 
