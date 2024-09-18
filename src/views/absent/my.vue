@@ -6,7 +6,7 @@
 -->
 <script setup name="myabsent">
 import OAPageHeader from "@/components/OAPageHeader.vue";
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
 import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
 import timeFormatter from "@/utils/timeFormatter";
@@ -26,6 +26,31 @@ let responder = reactive({
   email: "",
   realname: "",
 }); // 创建审批人对象
+
+const requestAbsents = async (newPage) => {
+  try {
+    let absent_data = await absentHttp.getMyAbsents(newPage);
+    let total = absent_data.count;
+    pagination.total = total;
+    let results = absent_data.results;
+    absents.value = results;
+  } catch (detail) {
+    ElMessage.error(detail);
+  }
+}; // 从服务器获取个人考勤列表
+
+let pagination = reactive({
+  page: 1,
+  total: 0,
+}); // 分页信息
+
+watch(
+  () => pagination.page,
+  (value) => {
+    requestAbsents(value);
+  }
+); // 监听分页信息变化, value为当前页码
+
 let responder_str = computed(() => {
   if (responder.email) {
     return "[" + responder.email + "]" + responder.realname;
@@ -91,8 +116,7 @@ onMounted(async () => {
     Object.assign(responder, responder_data);
 
     // 3. 获取个人考勤列表
-    let absent_data = await absentHttp.getMyAbsents();
-    absents.value = absent_data;
+    requestAbsents(1); // 默认获取第一页数据
   } catch (detail) {
     ElMessage.error(detail);
   }
@@ -113,7 +137,7 @@ onMounted(async () => {
     <el-card>
       <el-table :data="absents" style="width: 100%">
         <el-table-column prop="title" label="标题" />
-        <el-table-column prop="absent_type" label="类型" />
+        <el-table-column prop="absent_type.name" label="类型" />
         <el-table-column prop="request_content" label="原因" />
         <el-table-column label="发起时间">
           <template #default="scope">
@@ -137,6 +161,15 @@ onMounted(async () => {
           </template>
         </el-table-column>
       </el-table>
+      <template #footer>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="pagination.total"
+          :page-size="2"
+          v-model:current-page="pagination.page"
+        />
+      </template>
     </el-card>
   </el-space>
 
@@ -207,4 +240,13 @@ onMounted(async () => {
   </el-dialog>
 </template>
 
-<style scoped></style>
+<style scoped>
+.el-pagination {
+  justify-content: center;
+}
+
+/* 使用深度选择器, 使得el-space组件中的el-space__item元素宽度100%, 作用于考勤列表表单 */
+.el-space :deep(.el-space__item) {
+  width: 100%;
+}
+</style>
