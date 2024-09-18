@@ -9,6 +9,7 @@ import OAPageHeader from "@/components/OAPageHeader.vue";
 import { ref, reactive, onMounted, computed } from "vue";
 import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
+import timeFormatter from "@/utils/timeFormatter";
 
 let formLabelWidth = "100px"; // 表单标签宽度
 let dialogFormVisible = ref(false); // 发起考勤对话框, 默认不显示
@@ -18,6 +19,8 @@ let absentform = reactive({
   date_range: [],
   request_content: "",
 }); // 发起考勤表单, 默认为空
+
+let absents = ref([]); // 个人考勤列表, 默认为空
 let absent_types = ref([]); // 请假类型列表, 默认为空
 let responder = reactive({
   email: "",
@@ -76,6 +79,7 @@ const onSubmitAbsent = () => {
   });
 };
 
+// 生命周期钩子函数: 页面加载时获取数据
 onMounted(async () => {
   try {
     // 1. 获取请假类型列表
@@ -85,6 +89,10 @@ onMounted(async () => {
     // 2. 获取审批人信息
     let responder_data = await absentHttp.getResponder();
     Object.assign(responder, responder_data);
+
+    // 3. 获取个人考勤列表
+    let absent_data = await absentHttp.getMyAbsents();
+    absents.value = absent_data;
   } catch (detail) {
     ElMessage.error(detail);
   }
@@ -99,6 +107,36 @@ onMounted(async () => {
         <el-icon><Plus /></el-icon>
         发起考勤
       </el-button>
+    </el-card>
+
+    <!-- 个人考勤列表表格展示 -->
+    <el-card>
+      <el-table :data="absents" style="width: 100%">
+        <el-table-column prop="title" label="标题" />
+        <el-table-column prop="absent_type" label="类型" />
+        <el-table-column prop="request_content" label="原因" />
+        <el-table-column label="发起时间">
+          <template #default="scope">
+            {{ timeFormatter.stringFromDateTime(scope.row.create_time) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="start_date" label="开始日期" />
+        <el-table-column prop="end_date" label="结束日期" />
+        <el-table-column label="审批人">
+          <!-- 使用插槽, 可以自定义列的内容 -->
+          {{ responder_str }}
+        </el-table-column>
+        <el-table-column prop="response_content" label="反馈意见" />
+        <el-table-column label="审核状态">
+          <template #default="scope">
+            <el-tag type="info" v-if="scope.row.status == 1">审批中</el-tag>
+            <el-tag type="success" v-else-if="scope.row.status == 2">
+              已通过
+            </el-tag>
+            <el-tag type="danger" v-else>已拒绝</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-card>
   </el-space>
 
