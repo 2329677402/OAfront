@@ -6,10 +6,75 @@
 -->
 <script setup name="subabsent">
 import OAPageHeader from "@/components/OAPageHeader.vue";
+import { ref, reactive, onMounted } from "vue";
+import absentHttp from "@/api/absentHttp";
+import { ElMessage } from "element-plus";
+import timeFormatter from "@/utils/timeFormatter";
+
+let absents = ref([]); // 下属考勤列表, 默认为空
+let pagination = reactive({
+  page: 1,
+  total: 0,
+}); // 分页信息
 </script>
 
 <template>
-  <OAPageHeader content="下属考勤"></OAPageHeader>
+  <el-space direction="vertical" fill style="width: 100%">
+    <OAPageHeader content="下属考勤"></OAPageHeader>
+    <el-card>
+      <el-table :data="absents" style="width: 100%">
+        <el-table-column prop="title" label="标题" />
+        <el-table-column prop="absent_type.name" label="类型" />
+        <el-table-column prop="request_content" label="原因" />
+        <el-table-column label="发起时间">
+          <template #default="scope">
+            {{ timeFormatter.stringFromDateTime(scope.row.create_time) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="start_date" label="开始日期" />
+        <el-table-column prop="end_date" label="结束日期" />
+        <el-table-column prop="responder.realname" label="审批人" />
+        <el-table-column prop="response_content" label="反馈意见" />
+        <el-table-column label="审核状态">
+          <template #default="scope">
+            <el-tag type="info" v-if="scope.row.status == 1">审批中</el-tag>
+            <el-tag type="success" v-else-if="scope.row.status == 2">
+              已通过
+            </el-tag>
+            <el-tag type="danger" v-else>已拒绝</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="处理">
+          <template #default="scope">
+            <el-button
+              v-if="scope.row.status == 1"
+              type="primary"
+              icon="EditPen"
+            />
+            <el-button v-else disabled type="default">已处理</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="pagination.total"
+          :page-size="2"
+          v-model:current-page="pagination.page"
+        />
+      </template>
+    </el-card>
+  </el-space>
 </template>
 
-<style scoped></style>
+<style scoped>
+.el-pagination {
+  justify-content: center;
+}
+
+/* 使用深度选择器, 使得el-space组件中的el-space__item元素宽度100%, 作用于考勤列表表单 */
+.el-space :deep(.el-space__item) {
+  width: 100%;
+}
+</style>
