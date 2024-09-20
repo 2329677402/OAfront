@@ -216,3 +216,64 @@
 - **`var`**：函数作用域，变量提升，允许重复声明。
 - **[`let`](vscode-file://vscode-app/d:/Develop/IDE/VS Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)**：块作用域，变量提升但不初始化，不允许重复声明。
 - **`const`**：块作用域，变量提升但不初始化，不允许重复声明，声明时必须初始化且不能重新赋值（但对象和数组的内容可以改变）。
+
+
+
+## 3. defineProps和defineModel的区别
+
+> `defineProps`和 `defineModel` 是 Vue 3 中的两个不同的组合式 API，用于处理组件的属性和模型。
+
+### `defineProps`
+
+`defineProps`是 Vue 3 中用于定义组件属性（props）的组合式 API。它允许你在组合式 API setup 函数中声明组件的属性。属性是父组件传递给子组件的数据。
+
+示例：
+
+```vue
+<script setup>
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  title: String,
+  count: Number
+});
+</script>
+
+<template>
+  <div>
+    <h1>{{ props.title }}</h1>
+    <p>{{ props.count }}</p>
+  </div>
+</template>
+```
+
+在这个示例中，`defineProps` 用于声明 `title` 和 `count` 两个属性，这些属性可以从父组件传递到子组件。
+
+
+
+### `defineModel`
+
+`defineModel` 是 Vue 3.3 引入的一个新 API，用于简化双向绑定模型的定义。它允许你在组合式 API setup 函数中声明一个模型属性，并自动处理 `v-model` 的绑定。
+
+示例：
+
+`````vue
+<script setup>
+import { defineModel } from 'vue';
+
+const modelValue = defineModel('modelValue', String);
+</script>
+
+<template>
+  <input v-model="modelValue" />
+</template>
+`````
+
+在这个示例中，`defineModel` 用于声明一个 `modelValue` 模型属性，这个属性可以通过 `v-model` 进行双向绑定。
+
+
+
+### 总结
+
+- `defineProps` 用于定义组件的==属性==（props），这些属性是从父组件传递过来的。
+- `defineModel` 用于定义组件的==模型属性==，简化了 `v-model` 的双向绑定。

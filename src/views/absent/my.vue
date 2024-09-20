@@ -11,6 +11,7 @@ import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
 import timeFormatter from "@/utils/timeFormatter";
 import OAMain from "@/components/OAMain.vue";
+import OAPagination from "@/components/OAPagination.vue";
 
 let formLabelWidth = "100px"; // 表单标签宽度
 let dialogFormVisible = ref(false); // 发起考勤对话框, 默认不显示
@@ -161,13 +162,17 @@ onMounted(async () => {
         </el-table-column>
       </el-table>
       <template #footer>
-        <el-pagination
+        <!-- <el-pagination
           background
           layout="prev, pager, next"
           :total="pagination.total"
           :page-size="2"
           v-model:current-page="pagination.page"
-        />
+        /> -->
+        <OAPagination
+          v-model="pagination.page"
+          :total="pagination.total"
+        ></OAPagination>
       </template>
     </el-card>
   </OAMain>
@@ -239,8 +244,4 @@ onMounted(async () => {
   </el-dialog>
 </template>
 
-<style scoped>
-.el-pagination {
-  justify-content: center;
-}
-</style>
+<style scoped></style>

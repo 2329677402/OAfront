@@ -11,6 +11,7 @@ import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
 import timeFormatter from "@/utils/timeFormatter";
 import OAMain from "@/components/OAMain.vue";
+import OAPagination from "@/components/OAPagination.vue";
 
 let absents = ref([]); // 下属考勤列表, 默认为空
 let pagination = reactive({
@@ -56,20 +57,13 @@ let pagination = reactive({
         </el-table-column>
       </el-table>
       <template #footer>
-        <el-pagination
-          background
-          layout="prev, pager, next"
+        <OAPagination
+          v-model="pagination.page"
           :total="pagination.total"
-          :page-size="2"
-          v-model:current-page="pagination.page"
-        />
+        ></OAPagination>
       </template>
     </el-card>
   </OAMain>
 </template>
 
-<style scoped>
-.el-pagination {
-  justify-content: center;
-}
-</style>
+<style scoped></style>
