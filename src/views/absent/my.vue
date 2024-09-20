@@ -12,6 +12,7 @@ import { ElMessage } from "element-plus";
 import timeFormatter from "@/utils/timeFormatter";
 import OAMain from "@/components/OAMain.vue";
 import OAPagination from "@/components/OAPagination.vue";
+import OADialog from "@/components/OADialog.vue";
 
 let formLabelWidth = "100px"; // 表单标签宽度
 let dialogFormVisible = ref(false); // 发起考勤对话框, 默认不显示
@@ -99,6 +100,7 @@ const onSubmitAbsent = () => {
         let absent = await absentHttp.applyAbsent(data);
         console.log(absent);
         dialogFormVisible.value = false; // 提交之后关闭对话框
+        absents.value.unshift(absent); // 将提交的表单数据添加到absents列表的最前面, 以便实时显示
       } catch (detail) {
         ElMessage.error(detail);
       }
@@ -177,8 +179,14 @@ onMounted(async () => {
     </el-card>
   </OAMain>
 
-  <!-- 发起考勤对话框 -->
-  <el-dialog v-model="dialogFormVisible" title="发起请假" width="500">
+  <OADialog
+    v-model="dialogFormVisible"
+    title="发起请假"
+    width="500"
+    @cancel="dialogFormVisible = false"
+    @submit="onSubmitAbsent"
+  >
+    <!-- 考勤表单具体内容 -->
     <el-form :model="absentform" :rules="rules" ref="absentfromref">
       <el-form-item label="标题" :label-width="formLabelWidth" prop="title">
         <el-input v-model="absentform.title" autocomplete="off" />
@@ -235,13 +243,7 @@ onMounted(async () => {
         />
       </el-form-item>
     </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="onSubmitAbsent"> 确认 </el-button>
-      </div>
-    </template>
-  </el-dialog>
+  </OADialog>
 </template>
 
 <style scoped></style>
