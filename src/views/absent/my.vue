@@ -10,6 +10,7 @@ import { ref, reactive, onMounted, computed, watch } from "vue";
 import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
 import timeFormatter from "@/utils/timeFormatter";
+import OAMain from "@/components/OAMain.vue";
 
 let formLabelWidth = "100px"; // 表单标签宽度
 let dialogFormVisible = ref(false); // 发起考勤对话框, 默认不显示
@@ -124,15 +125,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <el-space direction="vertical" fill style="width: 100%">
-    <OAPageHeader content="个人考勤"></OAPageHeader>
+  <OAMain title="个人考勤">
     <el-card style="text-align: right">
       <el-button type="primary" @click="onShowDialog">
         <el-icon><Plus /></el-icon>
         发起考勤
       </el-button>
     </el-card>
-
     <!-- 个人考勤列表表格展示 -->
     <el-card>
       <el-table :data="absents" style="width: 100%">
@@ -171,7 +170,7 @@ onMounted(async () => {
         />
       </template>
     </el-card>
-  </el-space>
+  </OAMain>
 
   <!-- 发起考勤对话框 -->
   <el-dialog v-model="dialogFormVisible" title="发起请假" width="500">
@@ -243,10 +242,5 @@ onMounted(async () => {
 <style scoped>
 .el-pagination {
   justify-content: center;
-}
-
-/* 使用深度选择器, 使得el-space组件中的el-space__item元素宽度100%, 作用于考勤列表表单 */
-.el-space :deep(.el-space__item) {
-  width: 100%;
 }
 </style>
