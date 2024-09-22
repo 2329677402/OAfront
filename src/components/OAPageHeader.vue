@@ -6,7 +6,7 @@
 -->
 <script setup name="OAPageHeader">
 import { useRouter } from "vue-router";
-import { defineProps } from "vue";
+// import { defineProps } from "vue";
 const router = useRouter();
 const goBack = () => {
   router.go(-1); // 返回上一页面

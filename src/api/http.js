@@ -61,6 +61,18 @@ class Http {
       }
     });
   }
+
+  put(path, data) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let result = await this.instance.put(path, data);
+        resolve(result.data);
+      } catch (err) {
+        let detail = err.response.data.detail;
+        reject(detail);
+      }
+    });
+  }
 }
 
 export default new Http();

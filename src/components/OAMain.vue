@@ -6,7 +6,7 @@
 -->
 <script setup>
 import OAPageHeader from "@/components/OAPageHeader.vue";
-import { defineProps } from "vue";
+// import { defineProps } from "vue";
 
 let props = defineProps({
   title: "",

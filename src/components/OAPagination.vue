@@ -5,7 +5,7 @@
  * @Description: 全局分页组件封装
 -->
 <script setup name="OAPagination">
-import { defineModel, defineProps } from "vue";
+// import { defineModel, defineProps } from "vue";
 
 // 分页数据: 总数, 当前页数
 let props = defineProps({
@@ -15,7 +15,7 @@ let props = defineProps({
   },
   pageSize: {
     type: Number,
-    default: 10,
+    default: 2,
   },
 });
 

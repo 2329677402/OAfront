@@ -29,9 +29,22 @@ const getMyAbsents = (page = 1) => {
   const path = "/absent/absent?who=my&page=" + page;
   return http.get(path);
 };
+
+const getSubAbsents = (page = 1) => {
+  const path = "/absent/absent?who=sub&page=" + page;
+  return http.get(path);
+};
+
+const handleSubAbsent = (absent_id, status, response_content) => {
+  const path = "/absent/absent/" + absent_id;
+  return http.put(path, { status, response_content });
+};
+
 export default {
   getAbsentTypes,
   getResponder,
   applyAbsent,
   getMyAbsents,
+  getSubAbsents,
+  handleSubAbsent,
 };

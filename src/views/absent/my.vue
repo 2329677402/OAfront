@@ -101,6 +101,7 @@ const onSubmitAbsent = () => {
         console.log(absent);
         dialogFormVisible.value = false; // 提交之后关闭对话框
         absents.value.unshift(absent); // 将提交的表单数据添加到absents列表的最前面, 以便实时显示
+        ElMessage.success("请假发起成功!");
       } catch (detail) {
         ElMessage.error(detail);
       }
