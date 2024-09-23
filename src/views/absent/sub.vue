@@ -6,7 +6,7 @@
 -->
 <script setup name="subabsent">
 // import OAPageHeader from "@/components/OAPageHeader.vue";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
 import timeFormatter from "@/utils/timeFormatter";
@@ -66,13 +66,27 @@ const onSubmitAbsent = () => {
   });
 }; // 提交处理考勤表单
 
+const requestSubAbsents = async (page) => {
+  try {
+    let data = await absentHttp.getSubAbsents(page);
+    pagination.total = data.count;
+    absents.value = data.results;
+  } catch (detail) {
+    ElMessage.error(detail);
+  }
+}; // 从服务器请求下属考勤数据
+
+watch(
+  () => pagination.page,
+  (value) => {
+    requestSubAbsents(value);
+  }
+); // 监听下属考勤列表的分页信息变化, value为当前页码
+
 // 生命周期函数: 组件挂载后获取数据
 onMounted(async () => {
   try {
-    let data = await absentHttp.getSubAbsents();
-    // console.log(data);
-    pagination.total = data.count;
-    absents.value = data.results;
+    requestSubAbsents(pagination.page);
   } catch (detail) {
     ElMessage.error(detail);
   }

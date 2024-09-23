@@ -30,11 +30,13 @@ const getMyAbsents = (page = 1) => {
   return http.get(path);
 };
 
+// 下属考勤列表接口
 const getSubAbsents = (page = 1) => {
   const path = "/absent/absent?who=sub&page=" + page;
   return http.get(path);
 };
 
+// 处理下属考勤接口
 const handleSubAbsent = (absent_id, status, response_content) => {
   const path = "/absent/absent/" + absent_id;
   return http.put(path, { status, response_content });
