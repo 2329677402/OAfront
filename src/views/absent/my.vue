@@ -5,7 +5,7 @@
  * @Description: 个人考勤页面
 -->
 <script setup name="myabsent">
-import OAPageHeader from "@/components/OAPageHeader.vue";
+// import OAPageHeader from "@/components/OAPageHeader.vue";
 import { ref, reactive, onMounted, computed, watch } from "vue";
 import absentHttp from "@/api/absentHttp";
 import { ElMessage } from "element-plus";
@@ -187,7 +187,7 @@ onMounted(async () => {
     @cancel="dialogFormVisible = false"
     @submit="onSubmitAbsent"
   >
-    <!-- 考勤表单具体内容 -->
+    <!-- 发起考勤表单 -->
     <el-form :model="absentform" :rules="rules" ref="absentfromref">
       <el-form-item label="标题" :label-width="formLabelWidth" prop="title">
         <el-input v-model="absentform.title" autocomplete="off" />

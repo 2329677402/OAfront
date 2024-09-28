@@ -27,15 +27,15 @@ let rules = reactive({
   old_pwd: [
     // trigger: "blur"：失去输入框焦点时触发验证
     { required: true, message: "请输入旧密码！", trigger: "blur" },
-    { min: 6, max: 20, message: "密码长度需在6~20之间！", trigger: "blur" },
+    { min: 6, max: 20, message: "密码长度需在6~20之间!", trigger: "blur" },
   ],
   new_pwd: [
     { required: true, message: "请输入新密码！", trigger: "blur" },
-    { min: 6, max: 20, message: "密码长度需在6~20之间！", trigger: "blur" },
+    { min: 6, max: 20, message: "密码长度需在6~20之间!", trigger: "blur" },
   ],
   confirm_pwd: [
     { required: true, message: "再次确认新密码！", trigger: "blur" },
-    { min: 6, max: 20, message: "密码长度需在6~20之间！", trigger: "blur" },
+    { min: 6, max: 20, message: "密码长度需在6~20之间!", trigger: "blur" },
   ],
 }); // 修改密码表单验证规则
 
@@ -138,11 +138,11 @@ const onControlResetPwdDialog = () => {
             <el-icon><BellFilled /></el-icon>
             <span>通知管理</span>
           </template>
-          <el-menu-item index="3-1">
+          <el-menu-item index="3-1" :route="{ name: 'inform_publish' }">
             <el-icon><CirclePlusFilled /></el-icon>
             <span>发布通知</span>
           </el-menu-item>
-          <el-menu-item index="3-2">
+          <el-menu-item index="3-2" :route="{ name: 'inform_list' }">
             <el-icon><List /></el-icon>
             <span>通知列表</span>
           </el-menu-item>

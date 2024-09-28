@@ -2,7 +2,7 @@
 
 # OAfront
 
-## 1. ref和reactive的使用场景
+## 1. ref && reactive
 
 > 在Vue 3中，`ref`和`reactive`的使用场景有所不同，主要取决于你需要处理的数据类型和复杂度。以下是它们的使用场景和区别：
 
@@ -94,7 +94,7 @@
 
 
 
-## 2. var、let、const的使用场景
+## 2. var、let、const
 
 > 在JavaScript中，`var`、[`let`](vscode-file://vscode-app/d:/Develop/IDE/VS Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)和`const`是用于声明变量的关键字，它们之间有一些重要的区别：
 
@@ -219,7 +219,7 @@
 
 
 
-## 3. defineProps和defineModel的区别
+## 3. defineProps && defineModel
 
 > `defineProps`和 `defineModel` 是 Vue 3 中的两个不同的组合式 API，用于处理组件的属性和模型。
 
@@ -277,3 +277,92 @@ const modelValue = defineModel('modelValue', String);
 
 - `defineProps` 用于定义组件的==属性==（props），这些属性是从父组件传递过来的。
 - `defineModel` 用于定义组件的==模型属性==，简化了 `v-model` 的双向绑定。
+
+
+
+## 4. route && router
+
+> 在Vue.js中，`route`和`router`是与路由相关的两个不同概念，它们有不同的使用场景和作用：
+
+### route
+
+`route`是当前激活的路由对象，包含了当前路由的所有信息。你可以通过`this.$route`在组件中访问它。[`route`](vscode-file://vscode-app/d:/Develop/IDE/VS Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)对象包含以下信息：
+
+- **`path`**：当前路由的路径。
+- **`params`**：动态路由参数。
+- **`query`**：查询参数。
+- **[`name`](vscode-file://vscode-app/d:/Develop/IDE/VS Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)**：路由的名称。
+- **`meta`**：路由的元信息。
+- **`fullPath`**：完整的路径。
+- **`hash`**：URL中的哈希值。
+- **`matched`**：匹配到的路由记录。
+
+#### 使用场景
+
+1. **获取当前路由信息**：在组件中获取当前路由的路径、参数、查询等信息。
+2. **条件渲染**：根据当前路由信息进行条件渲染。
+
+示例：
+
+```vue
+<template>
+  <div>
+    <p>当前路径: {{ $route.path }}</p>
+    <p>查询参数: {{ $route.query }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  computed: {
+    currentRoute() {
+      return this.$route;
+    }
+  }
+};
+</script>
+```
+
+
+
+### router
+
+`router`是Vue Router的实例，包含了导航的方法和全局的路由配置。你可以通过`this.$router`在组件中访问它。`router`对象包含以下方法：
+
+- **`push`**：导航到一个新的URL。
+- **`replace`**：导航到一个新的URL，但不会在历史记录中留下记录。
+- **`go`**：在浏览历史中前进或后退。
+- **`back`**：后退一步。
+- **`forward`**：前进一步。
+
+#### 使用场景
+
+1. **编程式导航**：在代码中使用方法进行路由跳转。
+2. **全局路由配置**：设置全局的路由守卫、动态添加路由等。
+
+示例：
+
+```vue
+<template>
+  <div>
+    <button @click="goToHome">回到首页</button>
+  </div>
+</template>
+
+<script>
+export default {
+  methods: {
+    goToHome() {
+      this.$router.push({ name: 'home' });
+    }
+  }
+};
+</script>
+```
+
+
+
+### 总结
+
+- **`route`**：用于获取当前路由的信息，适用于需要访问当前路由路径、参数、查询等信息的场景。
+- **`router`**：用于进行编程式导航和全局路由配置，适用于需要在代码中进行路由跳转或设置全局路由守卫的场景。

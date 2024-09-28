@@ -15,7 +15,7 @@ let props = defineProps({
   },
   pageSize: {
     type: Number,
-    default: 2,
+    default: 10,
   },
 });
 
