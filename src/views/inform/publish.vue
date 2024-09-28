@@ -2,7 +2,7 @@
  * @Date: 2024-09-28 19:53:37
  * @Author: Poco Ray
  * @FilePath: \OAfront\src\views\inform\publish.vue
- * @Description: 
+ * @Description: 发布通知页面
 -->
 <script setup name="inform_publish">
 import OAMain from "@/components/OAMain.vue";
@@ -17,6 +17,8 @@ import {
 } from "vue";
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue"; // 引入编辑器组件
+import staffHttp from "@/api/staffHttp";
+import { ElMessage } from "element-plus";
 
 let informForm = reactive({
   title: "", // 通知标题
@@ -66,6 +68,15 @@ const handleCreated = (editor) => {
 };
 /////////////////// wangEditor富文本编辑器相关配置 ///////////////////
 
+onMounted(async () => {
+  try {
+    let data = await staffHttp.getAllDepartment();
+    departments.value = data.results;
+  } catch (detail) {
+    ElMessage.error(detail);
+  }
+});
+
 const onSubmit = () => {
   fromRef.value.validate((valid) => {
     if (valid) {
@@ -79,55 +90,61 @@ const onSubmit = () => {
 
 <template>
   <OAMain title="发布通知">
-    <!-- 发起通知表单 -->
-    <el-form :model="informForm" :rules="rules" ref="fromRef">
-      <el-form-item label="通知标题" :label-width="formLabelWidth" prop="title">
-        <el-input v-model="informForm.title" autocomplete="off" />
-      </el-form-item>
+    <el-card>
+      <!-- 发起通知表单 -->
+      <el-form :model="informForm" :rules="rules" ref="fromRef">
+        <el-form-item
+          label="通知标题"
+          :label-width="formLabelWidth"
+          prop="title"
+        >
+          <el-input v-model="informForm.title" autocomplete="off" />
+        </el-form-item>
 
-      <el-form-item
-        label="通知部门"
-        :label-width="formLabelWidth"
-        prop="department_ids"
-      >
-        <el-select multiple v-model="informForm.department_ids">
-          <el-option :value="0" label="所有部门"></el-option>
-          <el-option
-            v-for="department in departments"
-            :label="department.name"
-            :value="department.id"
-            :key="department.name"
-          />
-        </el-select>
-      </el-form-item>
+        <el-form-item
+          label="通知部门"
+          :label-width="formLabelWidth"
+          prop="department_ids"
+        >
+          <el-select multiple v-model="informForm.department_ids">
+            <el-option :value="0" label="所有部门"></el-option>
+            <el-option
+              v-for="department in departments"
+              :label="department.name"
+              :value="department.id"
+              :key="department.name"
+            />
+          </el-select>
+        </el-form-item>
 
-      <el-form-item
-        label="通知内容"
-        :label-width="formLabelWidth"
-        prop="content"
-      >
-        <div style="border: 1px solid #ccc; width: 100%">
-          <Toolbar
-            style="border-bottom: 1px solid #ccc"
-            :editor="editorRef"
-            :defaultConfig="toolbarConfig"
-            :mode="mode"
-          />
-          <Editor
-            style="height: 500px; overflow-y: hidden"
-            v-model="informForm.content"
-            :defaultConfig="editorConfig"
-            :mode="mode"
-            @onCreated="handleCreated"
-          />
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div style="text-align: right; flex: auto">
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-        </div>
-      </el-form-item>
-    </el-form>
+        <el-form-item
+          label="通知内容"
+          :label-width="formLabelWidth"
+          prop="content"
+        >
+          <div style="border: 1px solid #ccc; width: 100%">
+            <Toolbar
+              style="border-bottom: 1px solid #ccc"
+              :editor="editorRef"
+              :defaultConfig="toolbarConfig"
+              :mode="mode"
+            />
+            <Editor
+              style="height: 500px; overflow-y: hidden"
+              v-model="informForm.content"
+              :defaultConfig="editorConfig"
+              :mode="mode"
+              @onCreated="handleCreated"
+            />
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <div style="text-align: right; flex: auto">
+            <el-button type="primary" @click="onSubmit">提交</el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </OAMain>
 </template>
 
