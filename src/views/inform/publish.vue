@@ -19,6 +19,10 @@ import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue"; // 引入编辑器组件
 import staffHttp from "@/api/staffHttp";
 import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/auth";
+import informHttp from "@/api/informHttp";
+
+const authStore = useAuthStore();
 
 let informForm = reactive({
   title: "", // 通知标题
@@ -53,7 +57,59 @@ const editorRef = shallowRef();
 // });
 
 const toolbarConfig = {};
-const editorConfig = { placeholder: "请输入内容..." };
+const editorConfig = {
+  placeholder: "请输入内容...",
+  MENU_CONF: {
+    uploadImage: {
+      // http://localhost:5173/image/upload
+      // http://localhost:8000/image/upload
+      server: import.meta.env.VITE_BASE_URL + "/image/upload", // 上传图片url地址
+      fieldName: "image", // 上传图片到服务器的接收字段, 需要与serializer中的字段一致
+      maxFileSize: 0.5 * 1024 * 1024, // 限制图片大小
+      maxNumberOfFiles: 10, // 限制图片数量
+      allowedFileTypes: ["image/*"], // 限制图片类型
+      headers: {
+        Authorization: "JWT " + authStore.token,
+      }, // 请求头, 需要登录后才能上传图片
+      timeout: 6 * 1000, // 超时时间
+
+      // 自定义插入图片
+      customInsert(res, insertFn) {
+        // 0: 上传成功, 1: 上传失败
+        if (res.errno == 0) {
+          // res 即服务端的返回结果，insertFn 为插入图片的函数
+          // Tips: 如果上传的是非图片文件, 后端在校验的时候只会返回message, 不会返回data, 此时的data为undefined
+          console.log(res);
+          let data = res.data;
+          let url = import.meta.env.VITE_BASE_URL + data.url;
+          let alt = data.alt;
+          let href = import.meta.env.VITE_BASE_URL + data.href;
+
+          // 从 res 中找到 url alt href ，然后插入图片
+          insertFn(url, alt, href);
+        } else {
+          ElMessage.error(res.message);
+        }
+      },
+
+      // 单个文件上传失败
+      onFailed(file, res) {
+        console.log(`${file.name} 上传失败`, res);
+      },
+
+      // 上传错误，或者触发 timeout 超时
+      onError(file, err, res) {
+        if (file.size > 0.5 * 1024 * 1024) {
+          ElMessage.error("图片大小不能超过0.5MB!");
+        } else {
+          ElMessage.error("图片格式不正确!");
+        }
+      },
+    },
+  },
+}; // wangEditor 富文本编辑器配置
+// editorConfig.MENU_CONF['uploadImage']
+
 let mode = "default"; // 编辑器模式
 
 // 组件销毁时，也及时销毁编辑器
@@ -78,9 +134,16 @@ onMounted(async () => {
 });
 
 const onSubmit = () => {
-  fromRef.value.validate((valid) => {
+  fromRef.value.validate(async (valid) => {
     if (valid) {
       console.log(informForm);
+      try {
+        let data = await informHttp.publishInform(informForm);
+        console.log(data);
+        ElMessage.success("发布成功!");
+      } catch (detail) {
+        ElMessage.error(detail);
+      }
     } else {
       return false;
     }
