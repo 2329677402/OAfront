@@ -10,7 +10,7 @@ import OAPageHeader from "@/components/OAPageHeader.vue";
 
 let props = defineProps({
   title: "",
-});
+}); // 考勤页面标题
 </script>
 
 <template>

@@ -73,6 +73,19 @@ class Http {
       }
     });
   }
+
+  delete(path) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let result = await this.instance.delete(path);
+        // Tips: 后端的delete方法, 只是返回一个状态码, 没有返回数据, 这里直接返回result即可
+        resolve(result);
+      } catch (err) {
+        let detail = err.response.data.detail;
+        reject(detail);
+      }
+    });
+  }
 }
 
 export default new Http();

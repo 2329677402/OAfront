@@ -146,7 +146,7 @@ const onSubmit = () => {
       }
     } else {
       return false;
-    }
+    } 
   });
 }; // 提交表单
 </script>

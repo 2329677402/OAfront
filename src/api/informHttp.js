@@ -13,6 +13,19 @@ const publishInform = (data) => {
   return http.post(path, data);
 };
 
+// 获取通知列表
+const getInformList = (page = 1) => {
+  const path = "/inform/inform?page=" + page;
+  return http.get(path);
+};
+
+// 删除通知
+const deleteInform = (pk) => {
+  const path = "/inform/inform/" + pk;
+  return http.delete(path);
+};
 export default {
   publishInform,
+  getInformList,
+  deleteInform,
 };
