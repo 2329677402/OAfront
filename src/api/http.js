@@ -44,8 +44,12 @@ class Http {
         let result = await this.instance.post(path, data);
         resolve(result.data);
       } catch (err) {
-        let detail = err.response.data.detail;
-        reject(detail);
+        try {
+          let detail = err.response.data.detail;
+          reject(detail);
+        } catch {
+          reject("服务器错误!");
+        }
       }
     });
   }

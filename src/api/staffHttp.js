@@ -13,6 +13,13 @@ const getAllDepartment = () => {
   return http.get(path);
 };
 
+const addStaff = (realname, email, password) => {
+  // 添加员工
+  const path = "/staff/staff";
+  return http.post(path, { realname, email, password });
+};
+
 export default {
   getAllDepartment,
+  addStaff,
 };
