@@ -19,7 +19,21 @@ const addStaff = (realname, email, password) => {
   return http.post(path, { realname, email, password });
 };
 
+const getStaffList = (page = 1, size = 10) => {
+  // 获取员工列表
+  const path = `/staff/staff?page=${page}&size=${size}`;
+  return http.get(path);
+};
+
+const updateStaffStatus = (staff_id, status) => {
+  // 修改员工状态
+  const path = `/staff/staff/${staff_id}`;
+  return http.put(path, { status });
+};
+
 export default {
   getAllDepartment,
   addStaff,
+  getStaffList,
+  updateStaffStatus,
 };
