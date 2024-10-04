@@ -7,10 +7,8 @@
 <script setup name="stafflist">
 import { ref, reactive, onMounted, watch } from "vue";
 import staffHttp from "@/api/staffHttp";
-import { useRouter } from "vue-router";
 import OAMain from "@/components/OAMain.vue";
 import OADialog from "@/components/OADialog.vue";
-import { useAuthStore } from "@/stores/auth";
 import timeFormatter from "@/utils/timeFormatter";
 import { ElMessage } from "element-plus";
 
@@ -51,7 +49,7 @@ const onSubmitEditStaff = async () => {
 
 async function fetchStaffList(page, page_size) {
   try {
-    let data = await staffHttp.getStaffList(page, page_size);
+    let data = await staffHttp.getStaffList(page, page_size, filterForm);
     pagination.total = data.count;
     staffs.value = data.results;
   } catch (detail) {
@@ -61,6 +59,12 @@ async function fetchStaffList(page, page_size) {
 
 onMounted(async () => {
   fetchStaffList(1, page_size.value);
+  try {
+    let data = await staffHttp.getAllDepartment(); // 获取部门列表
+    departments.value = data.results;
+  } catch (detail) {
+    ElMessage.error(detail);
+  }
 }); // 初始化获取员工列表
 
 watch(
@@ -77,6 +81,56 @@ watch(page_size, function (value) {
     pagination.page = 1;
   }
 }); // 监听每页显示条数变化
+
+let departments = ref([]); // 部门列表
+let filterForm = reactive({
+  department_id: null,
+  realname: "",
+  date_joined: [],
+}); // 筛选部门
+
+const onSearch = () => {
+  fetchStaffList(1, page_size.value);
+}; // 筛选员工
+
+let tableRef = ref(null); // 表格引用
+
+const onDownload = async () => {
+  let rows = tableRef.value.getSelectionRows();
+  if (!rows || rows.length == 0) {
+    ElMessage.info("请选择要下载的员工信息！");
+    return;
+  }
+  try {
+    // let row_uids = []
+    // for(let row of rows){
+    //   row_uids.push(row.uid)
+    // }
+
+    let response = await staffHttp.downloadStaffs(rows.map((row) => row.uid)); // map方法: 将rows数组中的每个元素映射为row.uid, 返回一个新数组
+    // 借助a标签, 将response数据, 放到a标签的href属性中, 然后模拟点击a标签, 实现下载
+    let href = window.URL.createObjectURL(response.data); // 将返回的二进制数据, 创建成一个URL对象
+    const a = document.createElement("a"); // 创建一个a标签
+    a.href = href;
+    // 设置a标签的download属性, 在点击的时候, 就会执行下载操作
+    a.setAttribute("download", "员工信息.xlsx");
+    // 将a标签添加到网页结构中
+    document.body.appendChild(a);
+    // 模拟点击a标签行为,只要点击了, 浏览器就会执行下载操作(下载href属性指向的文件)
+    a.click();
+
+    // 下载完成后, 移除a标签
+    document.body.removeChild(a);
+    // 释放URL对象
+    window.URL.revokeObjectURL(href);
+  } catch (detail) {
+    ElMessage.error(detail);
+  }
+}; // 下载员工信息
+
+const onUploadSuccess = () => {
+  router.push("/staff/upload");
+}; // 跳转到上传员工信息页面
 </script>
 
 <template>
@@ -96,7 +150,68 @@ watch(page_size, function (value) {
   </OADialog>
   <OAMain title="员工列表">
     <el-card>
-      <el-table :data="staffs">
+      <el-form :inline="true" class="my-form-inline">
+        <el-form-item>
+          <el-select
+            v-model="filterForm.department_id"
+            placeholder="请选择部门"
+          >
+            <el-option
+              v-for="department in departments"
+              :label="department.name"
+              :value="department.id"
+              :key="department.name"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-input v-model="filterForm.realname" placeholder="请输入姓名" />
+        </el-form-item>
+
+        <el-form-item>
+          <!-- 入职时间 -->
+          <el-date-picker
+            v-model="filterForm.date_joined"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+          />
+        </el-form-item>
+
+        <!-- 查询按钮 -->
+        <el-form-item>
+          <el-button type="primary" icon="Search" @click="onSearch">
+            查询
+          </el-button>
+        </el-form-item>
+
+        <!-- 下载按钮 -->
+        <el-form-item>
+          <el-button type="success" icon="Download" @click="onDownload">
+            下载
+          </el-button>
+        </el-form-item>
+
+        <!-- 上传按钮 -->
+        <el-form-item>
+          <el-upload
+            action=""
+            :on-success="onUploadSuccess"
+            :show-file-list="false"
+            :auto-upload="true"
+            accept=".xls,.xlsx"
+          >
+            <el-button type="info" icon="Upload">上传</el-button>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card>
+      <el-table :data="staffs" ref="tableRef">
         <!-- 多选框, 用于下载员工信息 -->
         <el-table-column type="selection" width="55"></el-table-column>
 
@@ -160,4 +275,16 @@ watch(page_size, function (value) {
   </OAMain>
 </template>
 
-<style scoped></style>
+<style scoped>
+.my-form-inline .el-input {
+  --el-input-width: 120px;
+}
+
+.my-form-inline .el-select {
+  --el-select-width: 120px;
+}
+
+.el-form--inline .el-form-item {
+  margin-right: 20px;
+}
+</style>

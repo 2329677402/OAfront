@@ -146,7 +146,7 @@ const onSubmit = () => {
       }
     } else {
       return false;
-    } 
+    }
   });
 }; // 提交表单
 </script>
@@ -169,6 +169,7 @@ const onSubmit = () => {
           :label-width="formLabelWidth"
           prop="department_ids"
         >
+          <!-- multiple属性用于多选 -->
           <el-select multiple v-model="informForm.department_ids">
             <el-option :value="0" label="所有部门"></el-option>
             <el-option

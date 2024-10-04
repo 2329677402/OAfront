@@ -19,10 +19,13 @@ const addStaff = (realname, email, password) => {
   return http.post(path, { realname, email, password });
 };
 
-const getStaffList = (page = 1, size = 10) => {
+const getStaffList = (page = 1, size = 10, params) => {
   // 获取员工列表
-  const path = `/staff/staff?page=${page}&size=${size}`;
-  return http.get(path);
+  const path = "/staff/staff";
+  params = params ? params : {};
+  params["page"] = page;
+  params["size"] = size;
+  return http.get(path, params);
 };
 
 const updateStaffStatus = (staff_id, status) => {
@@ -31,9 +34,16 @@ const updateStaffStatus = (staff_id, status) => {
   return http.put(path, { status });
 };
 
+const downloadStaffs = (pks) => {
+  // 下载员工信息
+  const path = "/staff/download";
+  return http.downloadFile(path, { pks: JSON.stringify(pks) });
+};
+
 export default {
   getAllDepartment,
   addStaff,
   getStaffList,
   updateStaffStatus,
+  downloadStaffs,
 };

@@ -57,7 +57,7 @@ class Http {
   get(path, params) {
     return new Promise(async (resolve, reject) => {
       try {
-        let result = await this.instance.get(path, params);
+        let result = await this.instance.get(path, { params });
         resolve(result.data);
       } catch (err) {
         let detail = err.response.data.detail;
@@ -83,6 +83,21 @@ class Http {
       try {
         let result = await this.instance.delete(path);
         // Tips: 后端的delete方法, 只是返回一个状态码, 没有返回数据, 这里直接返回result即可
+        resolve(result);
+      } catch (err) {
+        let detail = err.response.data.detail;
+        reject(detail);
+      }
+    });
+  }
+
+  downloadFile(path, params) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let result = await this.instance.get(path, {
+          params,
+          responseType: "blob", // 告诉axios返回的数据是二进制数据, 而不是JSON数据
+        });
         resolve(result);
       } catch (err) {
         let detail = err.response.data.detail;
