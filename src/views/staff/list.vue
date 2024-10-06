@@ -11,7 +11,10 @@ import OAMain from "@/components/OAMain.vue";
 import OADialog from "@/components/OADialog.vue";
 import timeFormatter from "@/utils/timeFormatter";
 import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/auth";
 
+const authStore = useAuthStore();
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 let staffs = ref([]);
 let pagination = reactive({
   page: 1,
@@ -49,9 +52,10 @@ const onSubmitEditStaff = async () => {
 
 async function fetchStaffList(page, page_size) {
   try {
-    let data = await staffHttp.getStaffList(page, page_size, filterForm);
-    pagination.total = data.count;
-    staffs.value = data.results;
+    let data = await staffHttp.getStaffList(page, page_size, filterForm); // 获取员工列表
+    pagination.total = data.count; // 更新总条目
+    pagination.page = page; // 更新页码, 重定向到第{page}页
+    staffs.value = data.results; // 更新员工列表
   } catch (detail) {
     ElMessage.error(detail);
   }
@@ -96,6 +100,7 @@ const onSearch = () => {
 let tableRef = ref(null); // 表格引用
 
 const onDownload = async () => {
+  // getSelectionRows()方法: 获取表格中选中的行数据, Element plus自带的方法,详情: https://element-plus.org/zh-CN/component/table.html#table-exposes
   let rows = tableRef.value.getSelectionRows();
   if (!rows || rows.length == 0) {
     ElMessage.info("请选择要下载的员工信息！");
@@ -129,8 +134,15 @@ const onDownload = async () => {
 }; // 下载员工信息
 
 const onUploadSuccess = () => {
-  router.push("/staff/upload");
-}; // 跳转到上传员工信息页面
+  ElMessage.success("员工信息上传成功！");
+  fetchStaffList(1, page_size.value); // 上传成功后, 刷新员工列表
+}; // 上传员工信息成功
+
+const onUploadFail = (error) => {
+  // Tips: error.message是一个字符串, 需要转换成JSON对象, 才能获取到其中的detail属性
+  const detail = JSON.parse(error.message).detail;
+  ElMessage.error(detail);
+}; // 上传员工信息失败
 </script>
 
 <template>
@@ -199,8 +211,10 @@ const onUploadSuccess = () => {
         <!-- 上传按钮 -->
         <el-form-item>
           <el-upload
-            action=""
+            :action="BASE_URL + '/staff/upload'"
+            :headers="{ Authorization: 'JWT ' + authStore.token }"
             :on-success="onUploadSuccess"
+            :on-error="onUploadFail"
             :show-file-list="false"
             :auto-upload="true"
             accept=".xls,.xlsx"
