@@ -111,7 +111,7 @@ const onControlResetPwdDialog = () => {
         :collapse-transition="false"
       >
         <!-- =======首页======= -->
-        <el-menu-item index="1">
+        <el-menu-item index="1" :route="{ name: 'home' }">
           <el-icon><HomeFilled /></el-icon>
           <span>首页</span>
         </el-menu-item>
@@ -122,6 +122,7 @@ const onControlResetPwdDialog = () => {
             <el-icon><Checked /></el-icon>
             <span>考勤管理</span>
           </template>
+
           <el-menu-item index="2-1" :route="{ name: 'myabsent' }">
             <el-icon><UserFilled /></el-icon>
             <span>个人考勤</span>
@@ -138,10 +139,12 @@ const onControlResetPwdDialog = () => {
             <el-icon><BellFilled /></el-icon>
             <span>通知管理</span>
           </template>
+
           <el-menu-item index="3-1" :route="{ name: 'inform_publish' }">
             <el-icon><CirclePlusFilled /></el-icon>
             <span>发布通知</span>
           </el-menu-item>
+
           <el-menu-item index="3-2" :route="{ name: 'inform_list' }">
             <el-icon><List /></el-icon>
             <span>通知列表</span>
@@ -154,6 +157,7 @@ const onControlResetPwdDialog = () => {
             <el-icon><Avatar /></el-icon>
             <span>员工管理</span>
           </template>
+
           <el-menu-item index="4-1" :route="{ name: 'staff_add' }">
             <el-icon><CirclePlusFilled /></el-icon>
             <span>新增员工</span>
