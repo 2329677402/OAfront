@@ -2,15 +2,16 @@
  * @Date: 2024-09-11 21:52:54
  * @Author: Poco Ray
  * @FilePath: \OAfront\src\views\main\frame.vue
- * @Description: OA系统首页
+ * @Description: OA系统主页
 -->
 <script setup name="frame">
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { Fold, Expand } from "@element-plus/icons-vue"; // 引入element-plus的图标
 import { useRouter } from "vue-router";
 import authHttp from "@/api/authHttp";
 import { ElMessage } from "element-plus";
+import routes from "@/router/frame";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -88,6 +89,14 @@ const onControlResetPwdDialog = () => {
   resetPwdform.confirm_pwd = "";
   dialogVisible.value = true;
 };
+
+let defaultActive = ref("home"); // 默认选中的菜单项
+onMounted(() => {
+  // Tips: routes是一个数组, 而不是一个对象, 所以需要通过routes[0]来获取对象的children属性
+  // console.log("routes", routes[0].children);
+  // console.log("当前路由:", router.currentRoute.value.name);
+  defaultActive.value = router.currentRoute.value.name;
+});
 </script>
 
 <template>
@@ -105,69 +114,48 @@ const onControlResetPwdDialog = () => {
         active-text-color="#ffd04b"
         background-color="#343a40"
         class="el-menu-vertical-demo"
-        default-active="1"
+        :default-active="defaultActive"
         text-color="#fff"
         :collapse="isCollapse"
         :collapse-transition="false"
       >
-        <!-- =======首页======= -->
-        <el-menu-item index="1" :route="{ name: 'home' }">
-          <el-icon><HomeFilled /></el-icon>
-          <span>首页</span>
-        </el-menu-item>
-
-        <!-- =======考勤管理======= -->
-        <el-sub-menu index="2">
-          <template #title>
-            <el-icon><Checked /></el-icon>
-            <span>考勤管理</span>
-          </template>
-
-          <el-menu-item index="2-1" :route="{ name: 'myabsent' }">
-            <el-icon><UserFilled /></el-icon>
-            <span>个人考勤</span>
-          </el-menu-item>
-          <el-menu-item index="2-2" :route="{ name: 'subabsent' }">
-            <el-icon><User /></el-icon>
-            <span>下属考勤</span>
-          </el-menu-item>
-        </el-sub-menu>
-
-        <!-- =======通知管理======= -->
-        <el-sub-menu index="3">
-          <template #title>
-            <el-icon><BellFilled /></el-icon>
-            <span>通知管理</span>
-          </template>
-
-          <el-menu-item index="3-1" :route="{ name: 'inform_publish' }">
-            <el-icon><CirclePlusFilled /></el-icon>
-            <span>发布通知</span>
+        <template v-for="route in routes[0].children">
+          <!-- =======没有子菜单的展现形式======= -->
+          <el-menu-item
+            v-if="!route.children"
+            :index="route.name"
+            :route="{ name: route.name }"
+          >
+            <el-icon>
+              <!-- component: 动态加载时使用的标签 -->
+              <component :is="route.meta.icon" />
+            </el-icon>
+            <span>{{ route.meta.text }}</span>
           </el-menu-item>
 
-          <el-menu-item index="3-2" :route="{ name: 'inform_list' }">
-            <el-icon><List /></el-icon>
-            <span>通知列表</span>
-          </el-menu-item>
-        </el-sub-menu>
-
-        <!-- =======员工管理======= -->
-        <el-sub-menu index="4">
-          <template #title>
-            <el-icon><Avatar /></el-icon>
-            <span>员工管理</span>
-          </template>
-
-          <el-menu-item index="4-1" :route="{ name: 'staff_add' }">
-            <el-icon><CirclePlusFilled /></el-icon>
-            <span>新增员工</span>
-          </el-menu-item>
-
-          <el-menu-item index="4-2" :route="{ name: 'staff_list' }">
-            <el-icon><List /></el-icon>
-            <span>员工列表</span>
-          </el-menu-item>
-        </el-sub-menu>
+          <!-- =======有子菜单的展现形式======= -->
+          <el-sub-menu v-else :index="route.name">
+            <template #title>
+              <el-icon>
+                <component :is="route.meta.icon" />
+              </el-icon>
+              <span>{{ route.meta.text }}</span>
+            </template>
+            <!-- 子菜单 -->
+            <template v-for="child in route.children">
+              <el-menu-item
+                v-if="!child.meta.hidden"
+                :index="child.name"
+                :route="{ name: child.name }"
+              >
+                <el-icon>
+                  <component :is="child.meta.icon" />
+                </el-icon>
+                <span>{{ child.meta.text }}</span>
+              </el-menu-item>
+            </template>
+          </el-sub-menu>
+        </template>
       </el-menu>
     </el-aside>
 
