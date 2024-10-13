@@ -15,6 +15,11 @@ import routes from "@/router/frame";
 
 const authStore = useAuthStore();
 const router = useRouter();
+
+let displayUser = reactive({
+  department: {},
+  realname: "",
+});
 let isCollapse = ref(false); // 侧边栏菜单, 默认不折叠
 let dialogVisible = ref(false); // 修改密码对话框, 默认不显示
 let resetPwdform = reactive({
@@ -96,6 +101,8 @@ onMounted(() => {
   // console.log("routes", routes[0].children);
   // console.log("当前路由:", router.currentRoute.value.name);
   defaultActive.value = router.currentRoute.value.name;
+  displayUser.department = authStore.user.department;
+  displayUser.realname = authStore.user.realname;
 });
 </script>
 
@@ -120,41 +127,56 @@ onMounted(() => {
         :collapse-transition="false"
       >
         <template v-for="route in routes[0].children">
-          <!-- =======没有子菜单的展现形式======= -->
-          <el-menu-item
-            v-if="!route.children"
-            :index="route.name"
-            :route="{ name: route.name }"
+          <template
+            v-if="
+              authStore.has_permission(route.meta.permissions, route.meta.opt)
+            "
           >
-            <el-icon>
-              <!-- component: 动态加载时使用的标签 -->
-              <component :is="route.meta.icon" />
-            </el-icon>
-            <span>{{ route.meta.text }}</span>
-          </el-menu-item>
-
-          <!-- =======有子菜单的展现形式======= -->
-          <el-sub-menu v-else :index="route.name">
-            <template #title>
+            <!-- =======没有子菜单的展现形式======= -->
+            <el-menu-item
+              v-if="!route.children"
+              :index="route.name"
+              :route="{ name: route.name }"
+            >
               <el-icon>
+                <!-- component: 动态加载时使用的标签 -->
                 <component :is="route.meta.icon" />
               </el-icon>
               <span>{{ route.meta.text }}</span>
-            </template>
-            <!-- 子菜单 -->
-            <template v-for="child in route.children">
-              <el-menu-item
-                v-if="!child.meta.hidden"
-                :index="child.name"
-                :route="{ name: child.name }"
-              >
+            </el-menu-item>
+
+            <!-- =======有子菜单的展现形式======= -->
+            <el-sub-menu v-else :index="route.name">
+              <template #title>
                 <el-icon>
-                  <component :is="child.meta.icon" />
+                  <component :is="route.meta.icon" />
                 </el-icon>
-                <span>{{ child.meta.text }}</span>
-              </el-menu-item>
-            </template>
-          </el-sub-menu>
+                <span>{{ route.meta.text }}</span>
+              </template>
+              <!-- 子菜单 -->
+              <template v-for="child in route.children">
+                <template
+                  v-if="
+                    authStore.has_permission(
+                      child.meta.permissions,
+                      child.meta.opt
+                    )
+                  "
+                >
+                  <el-menu-item
+                    v-if="!child.meta.hidden"
+                    :index="child.name"
+                    :route="{ name: child.name }"
+                  >
+                    <el-icon>
+                      <component :is="child.meta.icon" />
+                    </el-icon>
+                    <span>{{ child.meta.text }}</span>
+                  </el-menu-item>
+                </template>
+              </template>
+            </el-sub-menu>
+          </template>
         </template>
       </el-menu>
     </el-aside>
@@ -178,8 +200,8 @@ onMounted(() => {
           <span class="el-dropdown-link">
             <el-avatar :size="30" icon="UserFilled" />
             <span style="margin-left: 10px">
-              [{{ authStore.user.department.name }}]
-              {{ authStore.user.realname }}
+              [{{ displayUser.department.name }}]
+              {{ displayUser.realname }}
             </span>
             <el-icon class="el-icon--right">
               <arrow-down />

@@ -10,6 +10,14 @@ import { defineStore } from "pinia";
 const USER_KEY = "OA_USER_KEY";
 const TOKEN_KEY = "OA_TOKEN_KEY";
 
+export const PermissionChoices = {
+  // 权限选项, 用于可访问的模块
+  All: 0b111, // 管理员权限, 7
+  Staff: 0b000, // 普通员工权限, 0
+  Boarder: 0b001, // 董事会权限, 1
+  Leader: 0b010, // 部门leader权限, 2
+};
+
 export const useAuthStore = defineStore("auth", () => {
   // 私有变量
   let _user = ref({});
@@ -68,5 +76,57 @@ export const useAuthStore = defineStore("auth", () => {
     return false;
   });
 
-  return { setUserToken, clearUserToken, user, token, is_logined };
+  // Tips: 对于或运算 | , 如果两个对位都为0,则结果为0, 否则结果为1
+  // 对于且运算 & , 如果两个对位都为1,则结果为1, 否则结果为0
+  let own_permissions = computed(() => {
+    let _permissions = PermissionChoices.Staff; // 默认普通员工权限 0b000
+
+    if (is_logined.value) {
+      // 判断是否是董事会成员
+      if (user.value.department.name == "董事会") {
+        _permissions |= PermissionChoices.Boarder; // 0b000 | 0b001 = 0b001
+      }
+      // 判断是否是部门leader
+      if (user.value.department.leader_id == user.value.uid) {
+        _permissions |= PermissionChoices.Leader;
+      }
+      console.log(_permissions);
+      return _permissions;
+    }
+  });
+
+  // 判断当前用户是否拥有某个权限
+  function has_permission(permissions, opt = "|") {
+    // opt[可选,默认为|]: 或运算 |, 且运算 &
+    // own_permissions: 0b001
+    // permissions: [0b001, 0b010]
+    // map函数: 对permissions数组中的每一个元素执行一次回调函数, 返回一个新的数组
+    let results = permissions.map(
+      (permission) => (permission & own_permissions.value) == permission
+    );
+    // results: [true, false]
+
+    if (opt == "|") {
+      if (results.indexOf(true) >= 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (results.indexOf(false) >= 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+  return {
+    setUserToken,
+    clearUserToken,
+    user,
+    token,
+    is_logined,
+    has_permission,
+  };
 });
