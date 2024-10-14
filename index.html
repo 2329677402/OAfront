@@ -1,3 +1,9 @@
+<!--
+ * @Date: 2024-09-11 01:25:53
+ * @Author: Poco Ray
+ * @FilePath: \OAfront\index.html
+ * @Description: 入口文件, 用于挂载Vue实例
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +11,10 @@
   <meta charset="UTF-8">
   <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vite App</title>
+  <title>
+    <!-- 注意: 右侧没有=, 标签页title,在vite.config.js中createHtmlPlugin设置的title值 -->
+    <%= title %>
+  </title>
 </head>
 
 <body>
