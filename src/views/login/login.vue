@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-11 21:07:11
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\views\login\login.vue
+ * @FilePath: \oafront\src\views\login\login.vue
  * @Description: 登录进行邮箱密码校验, 成功后跳转到OA系统首页
 -->
 <script setup name="login">

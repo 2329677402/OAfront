@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-10-09 22:52:52
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\router\frame.js
+ * @FilePath: \oafront\src\router\frame.js
  * @Description: 路由重构, 通过权限控制不同用户展示不同的模块, 方便后期维护与管理
  */
 import frame from "@/views/main/frame.vue";

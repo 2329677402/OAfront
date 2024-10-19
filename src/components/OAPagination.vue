@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-20 23:09:46
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\components\OAPagination.vue
+ * @FilePath: \oafront\src\components\OAPagination.vue
  * @Description: 全局分页组件封装
 -->
 <script setup name="OAPagination">

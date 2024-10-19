@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-20 22:53:03
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\components\OAMain.vue
+ * @FilePath: \oafront\src\components\OAMain.vue
  * @Description: 考勤页面组件封装
 -->
 <script setup>

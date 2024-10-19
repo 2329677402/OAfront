@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-09-19 00:30:21
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\utils\timeFormatter.js
+ * @FilePath: \oafront\src\utils\timeFormatter.js
  * @Description: 时间格式化工具, 用于将Date对象转换成更友好的时间格式
  */
 

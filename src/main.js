@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-09-11 01:25:53
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\main.js
+ * @FilePath: \oafront\src\main.js
  * @Description: Vue3入口文件, 将组件挂载到#app
  */
 import { createApp } from "vue";

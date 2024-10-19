@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-17 21:29:01
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\views\absent\my.vue
+ * @FilePath: \oafront\src\views\absent\my.vue
  * @Description: 个人考勤页面
 -->
 <script setup name="myabsent">

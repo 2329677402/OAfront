@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-09-12 21:35:16
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\api\http.js
+ * @FilePath: \oafront\src\api\http.js
  * @Description: 封装axios, 方便批量处理HTTP请求
  */
 import axios from "axios";

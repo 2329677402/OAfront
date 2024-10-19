@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-09-12 00:56:29
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\stores\auth.js
+ * @FilePath: \oafront\src\stores\auth.js
  * @Description: 保存user和token数据
  */
 import { ref, computed } from "vue";

@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-11 21:52:54
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\views\main\frame.vue
+ * @FilePath: \oafront\src\views\main\frame.vue
  * @Description: OA系统主页
 -->
 <script setup name="frame">

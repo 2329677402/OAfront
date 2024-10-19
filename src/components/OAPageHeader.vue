@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-17 22:15:04
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\components\OAPageHeader.vue
+ * @FilePath: \oafront\src\components\OAPageHeader.vue
  * @Description: 系统页面公共类
 -->
 <script setup name="OAPageHeader">

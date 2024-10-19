@@ -1,7 +1,7 @@
 /*
  * @Author: Poco Ray
  * @Date: 2024-09-11 01:25:53
- * @FilePath: \OAfront\vite.config.js
+ * @FilePath: \oafront\vite.config.js
  * @Description:
  */
 import { fileURLToPath, URL } from "node:url";

@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-28 19:53:37
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\views\inform\publish.vue
+ * @FilePath: \oafront\src\views\inform\publish.vue
  * @Description: 发布通知页面
 -->
 <script setup name="inform_publish">

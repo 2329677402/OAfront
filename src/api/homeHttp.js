@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-10-08 23:30:08
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\api\homeHttp.js
+ * @FilePath: \oafront\src\api\homeHttp.js
  * @Description: 首页相关的API
  */
 import http from "./http";

@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-09-11 01:25:53
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\router\index.js
+ * @FilePath: \oafront\src\router\index.js
  * @Description: 页面-路由导航映射
  */
 import { createRouter, createWebHashHistory } from "vue-router";

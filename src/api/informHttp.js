@@ -1,7 +1,7 @@
 /*
  * @Date: 2024-10-01 20:43:05
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\api\informHttp.js
+ * @FilePath: \oafront\src\api\informHttp.js
  * @Description: 通知管理模块接口
  */
 

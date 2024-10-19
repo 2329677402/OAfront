@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-09-20 23:59:12
  * @Author: Poco Ray
- * @FilePath: \OAfront\src\components\OADialog.vue
+ * @FilePath: \oafront\src\components\OADialog.vue
  * @Description: 对话框组件封装
 -->
 <script setup>
