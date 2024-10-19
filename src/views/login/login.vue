@@ -89,7 +89,7 @@ const onSubmit = async () => {
     let token = data.token;
     let user = data.user;
     authStore.setUserToken(user, token);
-    router.push({ name: "frame" });
+    router.push({ name: "home" });
   } catch (detail) {
     // alert(detail);
     ElMessage.error(detail);
